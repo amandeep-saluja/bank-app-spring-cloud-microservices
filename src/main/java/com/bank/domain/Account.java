@@ -1,7 +1,7 @@
 package com.bank.domain;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Account {
 
-	private String id;
+	private long id;
 
 	@NotBlank(message = "Account number cannot be empty")
 	private String number;
@@ -34,7 +34,7 @@ public class Account {
 	private Double interestRate;
 
 	@NotBlank(message = "Account opening date cannot be empty")
-	private LocalDate openingDate;
+	private Date openingDate;
 
 	@NotBlank(message = "Account active cannot be empty")
 	private Boolean active;
@@ -45,7 +45,7 @@ public class Account {
 
 	private Float balance;
 
-	private List<Transaction> transactions;
+	private List<Transaction> transactions = new ArrayList<>();
 
 	/**
 	 * Method to prepare Entity from DTO

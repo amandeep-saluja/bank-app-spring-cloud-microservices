@@ -1,15 +1,21 @@
 package com.bank.entity;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.bank.domain.Account;
 import com.bank.domain.AccountType;
@@ -26,34 +32,38 @@ import lombok.NoArgsConstructor;
 public class AccountEntity {
 
 	@Id
-	private String id;
+	@GeneratedValue
+	private long id;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 10, name = "account_number")
 	private String number;
 	
 	@Column(name = "branch_location", nullable = false, length = 50)
 	private String branchLocation;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 50, name = "account_type")
+	@Enumerated(EnumType.STRING)
 	private AccountType type;
 	
-	@Column(name = "interest_rate", nullable = false, length = 50)
+	@Column(name = "interest_rate", nullable = false)
 	private Double interestRate;
 	
-	@Column(name = "opening_date", nullable = false, length = 50)
-	private LocalDate openingDate;
+	@Column(name = "opening_date", nullable = false)
+	@Temporal(TemporalType.DATE)
+	private Date openingDate;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, name = "is_active")
 	private Boolean active;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 16)
 	private String card;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false)
 	private Float balance;
 	
 	@OneToMany(cascade = CascadeType.REFRESH)
-	private List<TransactionEntity> transactionEntities;
+	@JoinColumn(name = "id")
+	private List<TransactionEntity> transactionEntities = new ArrayList<>();
 	
 	/**
 	 * Method to prepare Account DTO from account entity

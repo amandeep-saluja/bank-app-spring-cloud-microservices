@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Department {
 
-	private String id;
+	private long id;
 	
 	@NotBlank(message = "Department name cannot be empty")
 	private String name;

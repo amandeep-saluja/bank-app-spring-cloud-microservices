@@ -1,13 +1,14 @@
 package com.bank.entity;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,26 +23,27 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "transaction")
+@Table(name = "transaction_table")
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionEntity {
 
 	@Id
-	private String id;
+	@GeneratedValue
+	private long id;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 10)
 	private String source;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 10)
 	private String destination;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 50, name = "transaction_type")
 	private String type;
 
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, name = "time_stamp")
 	@Temporal(TemporalType.TIMESTAMP)
-	private LocalDate timeStamp;
+	private Date timeStamp;
 
 	@Enumerated(EnumType.STRING)
 	private Status status;

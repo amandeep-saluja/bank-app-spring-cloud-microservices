@@ -1,84 +1,94 @@
 package com.bank.entity;
 
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.bank.domain.Account;
 import com.bank.domain.Customer;
+import com.bank.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@Entity
+@Table(name = "customer")
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerEntity {
+@EqualsAndHashCode(callSuper = false)
+public class CustomerEntity extends User {
 
-	private String id;
+	@Id
+	private long id;
 
-	@NotBlank(message = "Name cannnot be empty")
+	@Column(nullable = false, length = 50)
 	private String name;
 
-	@Past(message = "Date of birth should be past")
-	@NotBlank(message = "Date of birth cannnot be empty")
-	private LocalDate dateOfBirth;
+	@Column(nullable = false, length = 50)
+	private String password;
 
-	@Pattern(regexp = "[0-9]{10}", message = "Phone number should be of 10 digits")
-	@NotBlank(message = "Phone no cannnot be empty")
+	@Column(nullable = false, name = "date_of_birth")
+	@Temporal(TemporalType.DATE)
+	private Date dateOfBirth;
+
+	@Column(nullable = false, length = 10, name = "phone_no")
 	private String phoneNo;
 
-	@Pattern(regexp = "{0-9}{12}", message = "Invalid aadhar card number")
-	@NotBlank(message = "Aadhar id cannot be blank")
-	private String aadhar_id;
+	@Column(nullable = false, length = 12, name = "aadhar_id")
+	private String aadharId;
 
-	@NotBlank(message = "Eamil id cannnot be empty")
-	@Email(message = "Enter valid email id")
+	@Column(nullable = false, length = 50, name = "email_id")
 	private String emailId;
 
-	@NotBlank(message = "Address cannnot be empty")
+	@Column(nullable = false, length = 50)
 	private String address;
 
-	@NotBlank(message = "Gender cannnot be empty")
-	@Pattern(regexp = "(M|F){1}", message = "Gender value can only be M or F")
+	@Column(nullable = false)
 	private Character gender;
 
-	@PastOrPresent(message = "Joining date can only be of past or present")
-	@NotBlank(message = "Joining Date cannnot be empty")
-	private LocalDate joiningDate;
+	@Column(nullable = false, name = "joining_date")
+	@Temporal(TemporalType.DATE)
+	private Date joiningDate;
 
-	@NotBlank(message = "Account cannnot be empty")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "account_id")
 	private AccountEntity accountEntity;
 
 	/**
 	 * Method to prepare customer object from customer entity
+	 * 
 	 * @param customerEntity
 	 * @return customer object
 	 */
 	public static Customer prepareDTO(CustomerEntity customerEntity) {
-		Customer customer = new Customer(customerEntity.getId(), customerEntity.getName(),
-				customerEntity.getDateOfBirth(), customerEntity.getPhoneNo(), customerEntity.getAadhar_id(),
+		Customer customer = new Customer(customerEntity.getId(), customerEntity.getName(), customerEntity.getPassword(),
+				customerEntity.getDateOfBirth(), customerEntity.getPhoneNo(), customerEntity.getAadharId(),
 				customerEntity.getEmailId(), customerEntity.getAddress(), customerEntity.getGender(),
 				customerEntity.getJoiningDate(), AccountEntity.prepareDto(customerEntity.getAccountEntity()));
 		return customer;
 	}
-	
+
 	/**
-	 * Method to prepare list of customer object from list of customer entity 
+	 * Method to prepare list of customer object from list of customer entity
+	 * 
 	 * @param customerEntities
 	 * @return list of customers
 	 */
 	public static List<Customer> prepEntityList(List<CustomerEntity> customerEntities) {
 		List<Customer> customers = new ArrayList<>();
-		for(CustomerEntity entity: customerEntities) {
+		for (CustomerEntity entity : customerEntities) {
 			customers.add(prepareDTO(entity));
 		}
 		return customers;

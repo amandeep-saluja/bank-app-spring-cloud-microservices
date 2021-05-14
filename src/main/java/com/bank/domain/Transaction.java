@@ -1,7 +1,7 @@
 package com.bank.domain;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Transaction {
 
-	private String id;
+	private long id;
 
 	@NotBlank(message = "Transaction source cannot be empty")
 	private String source;
@@ -29,7 +29,7 @@ public class Transaction {
 	private String type;
 
 	@NotBlank(message = "Transaction timestamp cannot be empty")
-	private LocalDate timeStamp;
+	private Date timeStamp;
 
 	@NotBlank(message = "Transaction status cannot be empty")
 	private Status status;

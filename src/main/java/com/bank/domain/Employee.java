@@ -14,17 +14,22 @@ import com.bank.entity.EmployeeEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+@EqualsAndHashCode(callSuper = false)
+public class Employee extends User {
 
-	private String id;
+	private long id;
 
 	@NotBlank(message = "Name cannnot be empty")
 	private String name;
+
+	@NotBlank(message = "Password cannnot be empty")
+	private String password;
 
 	@Past(message = "Date of birth should be past")
 	@NotBlank(message = "Date of birth cannnot be empty")
@@ -62,20 +67,22 @@ public class Employee {
 	 * @return Employee Entity
 	 */
 	public static EmployeeEntity prepareEntity(Employee employee) {
-		EmployeeEntity employeeEntity = new EmployeeEntity(employee.getId(), employee.getName(),
+		EmployeeEntity employeeEntity = new EmployeeEntity(employee.getId(), employee.getName(), employee.getPassword(),
 				employee.getDateOfBirth(), employee.getPhoneNo(), employee.getEmailId(), employee.getAddress(),
-				employee.getGender(), employee.getJoiningDate(), Account.prepareEntity(employee.getAccount()), Department.prepareEntity(employee.getDepartment()));
+				employee.getGender(), employee.getJoiningDate(), Account.prepareEntity(employee.getAccount()),
+				Department.prepareEntity(employee.getDepartment()));
 		return employeeEntity;
 	}
 
 	/**
 	 * Method to prepare List of EmployeeEntity from List of Employee DTOs
+	 * 
 	 * @param employees
 	 * @return List of Employee Entity
 	 */
 	public static List<EmployeeEntity> prepareEntityList(List<Employee> employees) {
 		List<EmployeeEntity> employeeEntities = new ArrayList<>();
-		for(Employee employee: employees) {
+		for (Employee employee : employees) {
 			employeeEntities.add(prepareEntity(employee));
 		}
 		return employeeEntities;

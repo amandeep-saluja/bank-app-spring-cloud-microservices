@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -23,12 +24,13 @@ import lombok.NoArgsConstructor;
 public class DepartmentEntity {
 
 	@Id
-	private String id;
+	@GeneratedValue
+	private long id;
 	
 	@Column(nullable = false, length = 50)
 	private String name;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 50, name = "department_type")
 	private DepartmentType type;
 	
 	/**
