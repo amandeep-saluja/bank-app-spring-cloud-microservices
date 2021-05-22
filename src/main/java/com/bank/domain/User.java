@@ -6,6 +6,5 @@ import lombok.Data;
 public abstract class User {
 
 	protected String phoneNo;
-
 	protected String password;
 }

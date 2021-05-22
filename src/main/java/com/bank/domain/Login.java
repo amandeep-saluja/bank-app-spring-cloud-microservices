@@ -19,6 +19,6 @@ public class Login {
 	private String password;
 	
 	@NotBlank(message = "{login.userrole.blank}")
-	@Pattern(regexp = "(ADMIN|EMPLOYEE|CUSTOMER)", message = "{login.userrole.invalid}")
+	@Pattern(regexp = "(EMPLOYEE|CUSTOMER)", message = "{login.userrole.invalid}")
 	private String userRole;
 }

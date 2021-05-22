@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -31,6 +33,7 @@ public class DepartmentEntity {
 	private String name;
 	
 	@Column(nullable = false, length = 50, name = "department_type")
+	@Enumerated(EnumType.STRING)
 	private DepartmentType type;
 	
 	/**
