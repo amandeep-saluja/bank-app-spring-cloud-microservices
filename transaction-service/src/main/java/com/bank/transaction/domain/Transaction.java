@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.bank.transaction.entity.TransactionEntity;
 
@@ -33,6 +34,9 @@ public class Transaction {
 
 	@NotBlank(message = "Transaction status cannot be empty")
 	private TransactionStatus status;
+	
+	@NotNull(message = "Transaction amount cannot be null")
+	private Float amount;
 
 	/**
 	 * Method to prepare Transaction entity from transaction DTO
@@ -43,7 +47,7 @@ public class Transaction {
 	public static TransactionEntity prepareTransactionEntity(Transaction transaction) {
 		TransactionEntity entity = new TransactionEntity(transaction.getId(), transaction.getSource(),
 				transaction.getDestination(), transaction.getType(), transaction.getTimeStamp(),
-				transaction.getStatus());
+				transaction.getStatus(), transaction.getAmount());
 		return entity;
 	}
 

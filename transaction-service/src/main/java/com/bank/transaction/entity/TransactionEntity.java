@@ -47,6 +47,9 @@ public class TransactionEntity {
 
 	@Enumerated(EnumType.STRING)
 	private TransactionStatus status;
+	
+	@Column(nullable = false)
+	private Float amount;
 
 	/**
 	 * Method to prepare Transaction DTO from Transaction Entity
@@ -56,7 +59,7 @@ public class TransactionEntity {
 	public static Transaction prepareTransaction(TransactionEntity transactionEntity) {
 		Transaction transaction = new Transaction(transactionEntity.getId(), transactionEntity.getSource(),
 				transactionEntity.getDestination(), transactionEntity.getType(), transactionEntity.getTimeStamp(),
-				transactionEntity.getStatus());
+				transactionEntity.getStatus(), transactionEntity.getAmount());
 		return transaction;
 	}
 

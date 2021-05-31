@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 
@@ -27,20 +29,20 @@ public class Account {
 	@NotBlank(message = "Branch location cannot be empty")
 	private String branchLocation;
 
-	@NotBlank(message = "Account type cannot be empty")
+	@NotNull(message = "Account type cannot be empty")
 	private AccountType type;
 
-	@NotBlank(message = "Interest Rate cannot be empty")
+	@NotNull(message = "Interest Rate cannot be empty")
 	private Double interestRate;
 
-	@NotBlank(message = "Account opening date cannot be empty")
+	@NotNull(message = "Account opening date cannot be empty")
 	private Date openingDate;
 
-	@NotBlank(message = "Account active cannot be empty")
+	@NotNull(message = "Account active cannot be empty")
 	private Boolean active;
 
 	@NotBlank(message = "Account number cannot be empty")
-	@CreditCardNumber(message = "Enter valid card number")
+	@Size(max = 16, min = 16, message = "Enter valid credit card number")
 	private String card;
 
 	private Float balance;

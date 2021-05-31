@@ -9,4 +9,6 @@ public interface TransactionService {
 	public List<Transaction> getTransactionBySource(String source);
 	
 	public List<Transaction> getTransactionByDestination(String destination);
+	
+	public Transaction doTransaction(String source, String destination, String type, Float amount);
 }
