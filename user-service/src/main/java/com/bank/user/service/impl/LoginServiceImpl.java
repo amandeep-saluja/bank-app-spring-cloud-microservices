@@ -7,10 +7,10 @@ import com.bank.user.domain.Login;
 import com.bank.user.domain.User;
 import com.bank.user.entity.CustomerEntity;
 import com.bank.user.entity.EmployeeEntity;
+import com.bank.user.exception.UserNotFoundException;
 import com.bank.user.repository.CustomerRepository;
 import com.bank.user.repository.EmployeeRepository;
 import com.bank.user.service.LoginService;
-import com.bank.user.utility.UserNotFoundException;
 
 @Service
 public class LoginServiceImpl implements LoginService

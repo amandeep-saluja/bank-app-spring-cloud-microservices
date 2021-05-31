@@ -32,7 +32,7 @@ public class EmployeeEntity extends User {
 
 	@Id
 	@GeneratedValue
-	private long id;
+	private Integer id;
 
 	@Column(nullable = false, length = 50)
 	private String name;
@@ -59,7 +59,7 @@ public class EmployeeEntity extends User {
 	private LocalDate joiningDate;
 
 	@Column(nullable = false, name = "account_id")
-	private long accountId;
+	private Integer accountId;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "department_id")

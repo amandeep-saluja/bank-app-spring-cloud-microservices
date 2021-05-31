@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class Customer extends User {
 
-	private long id;
+	private Integer id;
 
 	@NotBlank(message = "Name cannnot be empty")
 	private String name;
@@ -32,14 +33,14 @@ public class Customer extends User {
 	private String password;
 
 	@Past(message = "Date of birth should be past")
-	@NotBlank(message = "Date of birth cannnot be empty")
+	@NotNull(message = "Date of birth cannnot be empty")
 	private Date dateOfBirth;
 
 	@Pattern(regexp = "[0-9]{10}", message = "Phone number should be of 10 digits")
 	@NotBlank(message = "Phone no cannnot be empty")
 	private String phoneNo;
 
-	@Pattern(regexp = "{0-9}{12}", message = "Invalid aadhar card number")
+	@Pattern(regexp = "[0-9]{12}", message = "Invalid aadhar card number")
 	@NotBlank(message = "Aadhar id cannot be blank")
 	private String aadharId;
 
@@ -50,15 +51,15 @@ public class Customer extends User {
 	@NotBlank(message = "Address cannnot be empty")
 	private String address;
 
-	@NotBlank(message = "Gender cannnot be empty")
+	@NotNull(message = "Gender cannnot be empty")
 	@Pattern(regexp = "(M|F){1}", message = "Gender value can only be M or F")
-	private Character gender;
+	private String gender;
 
 	@PastOrPresent(message = "Joining date can only be of past or present")
-	@NotBlank(message = "Joining Date cannnot be empty")
+	@NotNull(message = "Joining Date cannnot be empty")
 	private Date joiningDate;
 
-	@NotBlank(message = "Account cannnot be empty")
+	@NotNull(message = "Account cannnot be empty")
 	private Account account;
 
 	/**

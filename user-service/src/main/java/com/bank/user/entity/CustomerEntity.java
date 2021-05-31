@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class CustomerEntity extends User {
 
 	@Id
-	private long id;
+	private Integer id;
 
 	@Column(nullable = false, length = 50)
 	private String name;
@@ -54,13 +54,13 @@ public class CustomerEntity extends User {
 	private String address;
 
 	@Column(nullable = false)
-	private Character gender;
+	private String gender;
 
 	@Column(nullable = false, name = "joining_date")
 	@Temporal(TemporalType.DATE)
 	private Date joiningDate;
 
-	private long accountId;
+	private Integer accountId;
 
 	/**
 	 * Method to prepare customer object from customer entity

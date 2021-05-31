@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.CreditCardNumber;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Account {
 
-	private long id;
+	private Integer id;
 
 	@NotBlank(message = "Account number cannot be empty")
 	private String number;
@@ -26,16 +26,17 @@ public class Account {
 	@NotBlank(message = "Branch location cannot be empty")
 	private String branchLocation;
 
-	@NotBlank(message = "Account type cannot be empty")
+	@NotNull(message = "Account type cannot be empty")
 	private AccountType type;
 
-	@NotBlank(message = "Interest Rate cannot be empty")
+	@NotNull(message = "Interest Rate cannot be empty")
 	private Double interestRate;
 
-	@NotBlank(message = "Account opening date cannot be empty")
+	@NotNull(message = "Account opening date cannot be empty")
+	@PastOrPresent(message = "Account opeing date cannot be of future")
 	private Date openingDate;
 
-	@NotBlank(message = "Account active cannot be empty")
+	@NotNull(message = "Account active cannot be empty")
 	private Boolean active;
 
 	@NotBlank(message = "Account number cannot be empty")

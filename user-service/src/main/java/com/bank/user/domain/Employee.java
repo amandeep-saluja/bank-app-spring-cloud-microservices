@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class Employee extends User {
 
-	private long id;
+	private Integer id;
 
 	@NotBlank(message = "Name cannnot be empty")
 	private String name;

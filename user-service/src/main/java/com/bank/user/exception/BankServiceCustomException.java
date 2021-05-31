@@ -1,4 +1,4 @@
-package com.bank.user.utility;
+package com.bank.user.exception;
 
 /**
  * Custom Exception class

@@ -16,9 +16,9 @@ import com.bank.user.domain.Employee;
 import com.bank.user.domain.Login;
 import com.bank.user.domain.User;
 import com.bank.user.domain.UserType;
+import com.bank.user.exception.UserNotFoundException;
 import com.bank.user.service.LoginService;
 import com.bank.user.utility.ResponseObject;
-import com.bank.user.utility.UserNotFoundException;
 
 @RestController
 @CrossOrigin
