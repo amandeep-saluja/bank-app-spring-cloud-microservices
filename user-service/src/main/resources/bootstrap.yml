@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    username: root
+    password: root
+  cloud:
+    config:
+      uri:      - http://localhost:1111
