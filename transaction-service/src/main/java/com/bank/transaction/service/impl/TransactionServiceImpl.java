@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,6 +22,7 @@ import com.bank.transaction.entity.TransactionEntity;
 import com.bank.transaction.repository.TransactionRepository;
 
 @Service
+@RefreshScope(proxyMode = ScopedProxyMode.NO)
 public class TransactionServiceImpl implements TransactionService{
 
 	@Autowired
@@ -27,10 +31,13 @@ public class TransactionServiceImpl implements TransactionService{
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Value("${account.port}")
+	private String accountServicePortNumber;
+	
 	/**
 	 * Account Service url
 	 */
-	private final String ACCOUNT_SERVICE_URL = "http://localhost:8001/account/";
+	private final String ACCOUNT_SERVICE_URL = "http://localhost:"+ accountServicePortNumber +"/account/";
 	
 	@Override
 	public List<Transaction> getTransactionBySource(String source) {
