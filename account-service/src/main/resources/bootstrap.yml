@@ -1,14 +1,9 @@
 spring:
   application:
     name: AccountService
-  config:
-    import: optional:configserver:http://localhost:1111
   cloud:
     config:
+      uri: http://localhost:1111
       failFast: true
-      
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+#  config:
+#    import: optional:configserver:http://localhost:1111

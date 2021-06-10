@@ -21,7 +21,10 @@ import com.bank.transaction.domain.TransactionStatus;
 import com.bank.transaction.entity.TransactionEntity;
 import com.bank.transaction.repository.TransactionRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 @RefreshScope(proxyMode = ScopedProxyMode.NO)
 public class TransactionServiceImpl implements TransactionService{
 
@@ -34,6 +37,9 @@ public class TransactionServiceImpl implements TransactionService{
 	@Value("${account.port}")
 	private String accountServicePortNumber;
 	
+	@Value("${server.port}")
+	private String currentPort;
+	
 	/**
 	 * Account Service url
 	 */
@@ -41,7 +47,12 @@ public class TransactionServiceImpl implements TransactionService{
 	
 	@Override
 	public List<Transaction> getTransactionBySource(String source) {
-		return TransactionEntity.prepareTransactionList(repository.findBySource(source));
+		log.info("fetching transactions from port: {} for account: {}", currentPort, source);
+		List<Transaction> transactions = TransactionEntity.prepareTransactionList(repository.findBySource(source));
+		for(Transaction trx:transactions) {
+			trx.setType(currentPort+" "+trx.getType());
+		}
+		return transactions;
 	}
 
 	@Override

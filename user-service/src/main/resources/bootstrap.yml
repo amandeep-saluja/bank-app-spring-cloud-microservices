@@ -1,10 +1,13 @@
 spring:
   application: 
     name: UserService
-  config:
-    import: optional:configserver:http://localhost:1111
   cloud:
     config:
+      uri: http://localhost:1111
       failFast: true
-      
+#  config:
+#    import: optional:configserver:http://localhost:1111
+
+server:  port: 8004 
+
 management:  endpoints:    web:      exposure:        include: "*"
