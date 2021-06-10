@@ -9,7 +9,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.bank.account.config.RibbonConfig;
 import com.bank.account.domain.Account;
 import com.bank.account.exception.AccountNotFoundException;
 import com.bank.account.service.AccountService;
@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/account")
 @Validated
 @Slf4j
-@RibbonClient(name = "accountRibbon", configuration = RibbonConfig.class)
+//@RibbonClient(name = "accountRibbon", configuration = RibbonConfig.class)
 public class AccountController {
 
 	@Autowired
@@ -47,6 +47,9 @@ public class AccountController {
 	
 	@Autowired
 	private RestTemplate template;
+	
+	@Autowired
+	DiscoveryClient client;
 
 	@Value("${transaction.port}")
 	private String transactionServicePortNumber;
@@ -59,7 +62,11 @@ public class AccountController {
 		Account account = service.getAccountById(accountId);
 		
 		log.info("Fetching transactions of account: {}", account.getNumber());
-		String url = "http://accountRibbon/transaction/allBySource/" + account.getNumber();
+		List<ServiceInstance> instances = client.getInstances("TransactionService");
+		ServiceInstance instance = instances.get(0);
+		String trxUrl = instance.getUri().toString();
+		
+		String url = trxUrl+"/transaction/allBySource/" + account.getNumber();
 		HttpHeaders headers = template.headForHeaders(url);
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
