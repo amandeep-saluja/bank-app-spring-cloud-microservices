@@ -1,5 +1,53 @@
-spring.application.name=Eureka1
-server.port=5555
-eureka.client.fetch-registry=false
-eureka.client.register-with-eureka=false
-eureka.client.service-url.defaultZone=http://localhost:5555/eureka
+spring:
+  profiles: Eureka1
+  application:
+    name: Eureka1
+    
+server:
+  port: 2222
+  
+eureka:
+  instance:
+    hostname: Eur1
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:2223/eureka, http://localhost:2224/eureka
+---
+
+spring:
+  profiles: Eureka2
+  application:
+    name: Eureka2
+    
+server:
+  port: 2223
+  
+eureka:
+  instance:
+    hostname: Eur2
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:2222/eureka, http://localhost:2224/eureka
+      
+---
+
+spring:
+  profiles: Eureka3
+  application:
+    name: Eureka3
+
+server:
+  port: 2224
+  
+eureka:
+  instance:
+    hostname: Eur3
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:2222/eureka, http://localhost:2223/eureka
