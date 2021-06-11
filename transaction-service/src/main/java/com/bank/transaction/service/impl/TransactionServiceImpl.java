@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpEntity;
@@ -34,16 +35,11 @@ public class TransactionServiceImpl implements TransactionService{
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@Value("${account.port}")
-	private String accountServicePortNumber;
+	@Autowired
+	private DiscoveryClient client;
 	
 	@Value("${server.port}")
 	private String currentPort;
-	
-	/**
-	 * Account Service url
-	 */
-	private final String ACCOUNT_SERVICE_URL = "http://localhost:"+ accountServicePortNumber +"/account/";
 	
 	@Override
 	public List<Transaction> getTransactionBySource(String source) {
@@ -62,6 +58,7 @@ public class TransactionServiceImpl implements TransactionService{
 
 	@Override
 	public Transaction doTransaction(String source, String destination, String type, Float amount) {
+		log.info("Transaction request raised by {}",source);
 		Transaction transaction = new Transaction();
 		transaction.setId(101 + repository.count());
 		transaction.setSource(source);
@@ -71,23 +68,29 @@ public class TransactionServiceImpl implements TransactionService{
 		transaction.setType(type);
 		transaction.setAmount(amount);
 		
+		log.info("Validating account details for starting transaction of amount {}", amount);
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<HttpHeaders> httpEntity = new HttpEntity<HttpHeaders>(headers);
 		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(ACCOUNT_SERVICE_URL+"doTrx")
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl(client.getInstances("ACCOUNTSERVICE").get(0).getUri().toString() + "/account/doTrx")
 				.queryParam("source", source)
 				.queryParam("destination", destination)
-//				.queryParam("type", type)
 				.queryParam("amount", amount);
 		
 		ResponseEntity<Float> txnAmount = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, httpEntity, Float.class);
-		System.out.println("Response Body: "+txnAmount.getBody());
+		log.info("Response Body: "+txnAmount.getBody());
 		
-		if(txnAmount.getBody() != null && amount.equals(txnAmount.getBody()))
+		if(txnAmount.getBody() != null && amount.equals(txnAmount.getBody())) {
 			transaction.setStatus(TransactionStatus.COMPLETED);
-		else
+			log.info("Transaction Completed successfully {}",transaction.toString());
+		}
+		else {
 			transaction.setStatus(TransactionStatus.FAILED);
+			log.info("Transaction failed {}", transaction.toString());
+		}
 		
 		TransactionEntity txn = repository.save(Transaction.prepareTransactionEntity(transaction));
 		return TransactionEntity.prepareTransaction(txn);

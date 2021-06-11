@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpEntity;
@@ -32,10 +31,10 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("${account.port}")
-	private String accountServicePortNumber;
+//	@Value("${account.port}")
+//	private String accountServicePortNumber;
 
-	private final String ACCOUNT_SERVICE_URL = "http://localhost:" + accountServicePortNumber + "/account/";
+	//private final String ACCOUNT_SERVICE_URL = "http://localhost:" + accountServicePortNumber + "/account/";
 
 	@Override
 	public Customer createCustomer(Customer customer) {
@@ -44,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 		HttpEntity<Account> entity = new HttpEntity<Account>(customer.getAccount(), headers);
-		ResponseEntity<Account> response = restTemplate.postForEntity(ACCOUNT_SERVICE_URL + "add", entity,
+		ResponseEntity<Account> response = restTemplate.postForEntity("http://ACCOUNTSERVICE"+"/account/add", entity,
 				Account.class);
 		CustomerEntity customerEntity = new CustomerEntity((int) (repository.count() + 101), customer.getName(),
 				customer.getPassword(), customer.getDateOfBirth(), customer.getPhoneNo(), customer.getAadharId(),
@@ -109,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 		HttpEntity<HttpHeaders> entity = new HttpEntity<HttpHeaders>(headers);
-		ResponseEntity<Account> response = restTemplate.postForEntity(ACCOUNT_SERVICE_URL + integer, entity,
+		ResponseEntity<Account> response = restTemplate.postForEntity("http://ACCOUNTSERVICE"+"/account/" + integer, entity,
 				Account.class);
 		return response.getBody();
 	}
