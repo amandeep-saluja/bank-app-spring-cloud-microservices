@@ -2,16 +2,19 @@ package com.bank.account.controller;
 
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.bank.account.domain.Account;
 import com.bank.account.exception.AccountNotFoundException;
 import com.bank.account.service.AccountService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/account")
 @Validated
 @Slf4j
-//@RibbonClient(name = "accountRibbon", configuration = RibbonConfig.class)
 public class AccountController {
 
 	@Autowired
@@ -42,26 +46,25 @@ public class AccountController {
 	@Autowired
 	private RestTemplate template;
 	
-//	@Autowired
-//	DiscoveryClient client;
-
 	@Value("${transaction.port}")
 	private String transactionServicePortNumber;
 	
 	@SuppressWarnings("unchecked")
+	@HystrixCommand(fallbackMethod = "fetchAccountFallback", 
+					ignoreExceptions = { 
+							TypeMismatchException.class,
+							IllegalArgumentException.class, 
+							MethodArgumentTypeMismatchException.class,
+							MethodArgumentNotValidException.class, 
+							ConstraintViolationException.class 
+					})
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "{accId}")
-	public Account fetchAccount(@PathVariable(name = "accId") Integer accountId) {
+	public Account fetchAccount(@NotNull @PathVariable(name = "accId") Integer accountId) {
 		log.info("Fetching Account details with account id: {} ", accountId);
 		
 		Account account = service.getAccountById(accountId);
 		
 		log.info("Fetching transactions of account: {}", account.getNumber());
-//		Used to get instances and hit them using unbalanced rest template
-//		List<ServiceInstance> instances = client.getInstances("TransactionService");
-//		ServiceInstance instance = instances.get(0);
-//		String trxUrl = instance.getUri().toString();
-//		log.info("Found trx service url: {} from Eureka", trxUrl);;
-		
 		@SuppressWarnings("rawtypes")
 		ResponseEntity<List> transactions = template.getForEntity(
 				"http://TransactionService" + "/transaction/allBySource/" + account.getNumber(), List.class);
@@ -70,6 +73,11 @@ public class AccountController {
 			account.setTransactions(transactions.getBody());
 		}
 		return account;
+	}
+	
+	public Account fetchAccountFallback(Integer accountId) {
+		log.info("Circuit breaked..! Some error occured..! Executing fallback method");
+		return new Account();
 	}
 	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
