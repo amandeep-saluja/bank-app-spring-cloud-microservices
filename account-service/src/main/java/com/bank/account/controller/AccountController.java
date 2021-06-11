@@ -48,8 +48,8 @@ public class AccountController {
 	@Autowired
 	private RestTemplate template;
 	
-	@Autowired
-	DiscoveryClient client;
+//	@Autowired
+//	DiscoveryClient client;
 
 	@Value("${transaction.port}")
 	private String transactionServicePortNumber;
@@ -62,17 +62,16 @@ public class AccountController {
 		Account account = service.getAccountById(accountId);
 		
 		log.info("Fetching transactions of account: {}", account.getNumber());
-		List<ServiceInstance> instances = client.getInstances("TransactionService");
-		ServiceInstance instance = instances.get(0);
-		String trxUrl = instance.getUri().toString();
+//		Used to get instances and hit them using unbalanced rest template
+//		List<ServiceInstance> instances = client.getInstances("TransactionService");
+//		ServiceInstance instance = instances.get(0);
+//		String trxUrl = instance.getUri().toString();
+//		log.info("Found trx service url: {} from Eureka", trxUrl);;
 		
-		String url = trxUrl+"/transaction/allBySource/" + account.getNumber();
-		HttpHeaders headers = template.headForHeaders(url);
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
 		@SuppressWarnings("rawtypes")
-		ResponseEntity<List> transactions = template.exchange(url, HttpMethod.GET, entity, List.class);
+		ResponseEntity<List> transactions = template.getForEntity(
+				"http://TransactionService" + "/transaction/allBySource/" + account.getNumber(), List.class);
+		log.info("Received response: {}", transactions.toString());
 		if (transactions.getStatusCode() != HttpStatus.NOT_FOUND) {
 			account.setTransactions(transactions.getBody());
 		}
