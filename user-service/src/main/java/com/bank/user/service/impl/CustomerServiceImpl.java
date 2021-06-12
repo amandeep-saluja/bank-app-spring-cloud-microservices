@@ -19,6 +19,7 @@ import com.bank.user.domain.Customer;
 import com.bank.user.entity.CustomerEntity;
 import com.bank.user.exception.UserNotFoundException;
 import com.bank.user.repository.CustomerRepository;
+import com.bank.user.service.AccountFeign;
 import com.bank.user.service.CustomerService;
 
 @Service
@@ -29,22 +30,12 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerRepository repository;
 
 	@Autowired
-	private RestTemplate restTemplate;
-
-//	@Value("${account.port}")
-//	private String accountServicePortNumber;
-
-	//private final String ACCOUNT_SERVICE_URL = "http://localhost:" + accountServicePortNumber + "/account/";
+	AccountFeign feign;
 
 	@Override
 	public Customer createCustomer(Customer customer) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-		HttpEntity<Account> entity = new HttpEntity<Account>(customer.getAccount(), headers);
-		ResponseEntity<Account> response = restTemplate.postForEntity("http://ACCOUNTSERVICE"+"/account/add", entity,
-				Account.class);
+		ResponseEntity<Account> response = feign.addAccount(customer.getAccount());
+		
 		CustomerEntity customerEntity = new CustomerEntity((int) (repository.count() + 101), customer.getName(),
 				customer.getPassword(), customer.getDateOfBirth(), customer.getPhoneNo(), customer.getAadharId(),
 				customer.getEmailId(), customer.getAddress(), customer.getGender(), customer.getJoiningDate(),
@@ -103,13 +94,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	public Account getAccountById(Integer integer) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-		HttpEntity<HttpHeaders> entity = new HttpEntity<HttpHeaders>(headers);
-		ResponseEntity<Account> response = restTemplate.postForEntity("http://ACCOUNTSERVICE"+"/account/" + integer, entity,
-				Account.class);
+		ResponseEntity<Account> response = feign.getAccount(integer);
 		return response.getBody();
 	}
 

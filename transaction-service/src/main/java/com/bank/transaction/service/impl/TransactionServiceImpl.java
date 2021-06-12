@@ -21,6 +21,8 @@ import com.bank.transaction.domain.Transaction;
 import com.bank.transaction.domain.TransactionStatus;
 import com.bank.transaction.entity.TransactionEntity;
 import com.bank.transaction.repository.TransactionRepository;
+import com.bank.transaction.service.AccountFeign;
+import com.bank.transaction.service.TransactionService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,10 +35,7 @@ public class TransactionServiceImpl implements TransactionService{
 	private TransactionRepository repository;
 	
 	@Autowired
-	private RestTemplate restTemplate;
-	
-	@Autowired
-	private DiscoveryClient client;
+	AccountFeign feign;
 	
 	@Value("${server.port}")
 	private String currentPort;
@@ -70,17 +69,17 @@ public class TransactionServiceImpl implements TransactionService{
 		
 		log.info("Validating account details for starting transaction of amount {}", amount);
 		
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<HttpHeaders> httpEntity = new HttpEntity<HttpHeaders>(headers);
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+//		HttpEntity<HttpHeaders> httpEntity = new HttpEntity<HttpHeaders>(headers);
+//		
+//		UriComponentsBuilder builder = UriComponentsBuilder
+//				.fromHttpUrl(client.getInstances("ACCOUNTSERVICE").get(0).getUri().toString() + "/account/doTrx")
+//				.queryParam("source", source)
+//				.queryParam("destination", destination)
+//				.queryParam("amount", amount);
 		
-		UriComponentsBuilder builder = UriComponentsBuilder
-				.fromHttpUrl(client.getInstances("ACCOUNTSERVICE").get(0).getUri().toString() + "/account/doTrx")
-				.queryParam("source", source)
-				.queryParam("destination", destination)
-				.queryParam("amount", amount);
-		
-		ResponseEntity<Float> txnAmount = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, httpEntity, Float.class);
+		ResponseEntity<Float> txnAmount = feign.performTransaction(source, destination, amount);
 		log.info("Response Body: "+txnAmount.getBody());
 		
 		if(txnAmount.getBody() != null && amount.equals(txnAmount.getBody())) {
