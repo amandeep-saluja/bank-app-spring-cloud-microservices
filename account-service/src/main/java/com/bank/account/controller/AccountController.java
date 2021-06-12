@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.bank.account.domain.Account;
+import com.bank.account.domain.Transaction;
 import com.bank.account.exception.AccountNotFoundException;
 import com.bank.account.service.AccountService;
+import com.bank.account.service.TransactionFeign;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +44,8 @@ public class AccountController {
 	private AccountService service;
 	
 	@Autowired
-	private RestTemplate template;
+	TransactionFeign feign;
 	
-//	@Value("${transaction.port}")
-//	private String transactionServicePortNumber;
-	
-	@SuppressWarnings("unchecked")
 	@HystrixCommand(fallbackMethod = "fetchAccountFallback", 
 					ignoreExceptions = { 
 							TypeMismatchException.class,
@@ -64,9 +61,8 @@ public class AccountController {
 		Account account = service.getAccountById(accountId);
 		
 		log.info("Fetching transactions of account: {}", account.getNumber());
-		@SuppressWarnings("rawtypes")
-		ResponseEntity<List> transactions = template.getForEntity(
-				"http://TransactionService" + "/transaction/allBySource/" + account.getNumber(), List.class);
+		ResponseEntity<List<Transaction>> transactions = feign.getTransactions(account.getNumber());
+		
 		log.info("Received response: {}", transactions.toString());
 		if (transactions.getStatusCode() != HttpStatus.NOT_FOUND) {
 			account.setTransactions(transactions.getBody());
