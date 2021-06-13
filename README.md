@@ -16,3 +16,12 @@ In this Stage, discovery server is used to get the registered services and used 
 
 ## Stage 6 - Circuit Breaker pattern and Fallback pattern for resilience or fault tolerant microservice
 In this Stage, hystrix is used as Circuit breaker pattern to break circuit and fallback pattern to salvage with alternative path using fallback method.
+
+## Stage 7 - Using single point of contact for UI - ZUUL API Gateway
+Here we are using single point of contact to communicate with different microservices using a API Gateway Server. It used ribbon as load balancer and hystrix for circuit breaker pattern.
+
+## Stage 8 - Open Feign as Declarative client for communicating other microservices
+We have replaced the Rest Template with Open Feign Declarative client for fetching data from different microservices.
+
+## Stage 9 - Tracing requests using Sleuth and Zipkin
+In this Stage, we use Sleuth for creating the logs with extra information like microservice name, trace id, span id and boolean flag for zipkin. Using these info zipkin creates tracing system for tracking the request among microservices. For zipkin, we can use a self-contained jar file for running zipkin server using command `curl -sSL https://zipkin.io/quickstart.sh | bash -s` and then `java -jar zipkin.jar`.
