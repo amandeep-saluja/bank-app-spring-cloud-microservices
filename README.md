@@ -24,4 +24,6 @@ Here we are using single point of contact to communicate with different microser
 We have replaced the Rest Template with Open Feign Declarative client for fetching data from different microservices.
 
 ## Stage 9 - Tracing requests using Sleuth and Zipkin
-In this Stage, we use Sleuth for creating the logs with extra information like microservice name, trace id, span id and boolean flag for zipkin. Using these info zipkin creates tracing system for tracking the request among microservices. For zipkin, we can use a self-contained jar file for running zipkin server using command `curl -sSL https://zipkin.io/quickstart.sh | bash -s` and then `java -jar zipkin.jar`.
+In this Stage, we use Sleuth for creating the logs with extra information like microservice name, trace id, span id and boolean flag for zipkin. 
+Using these info zipkin creates tracing system for tracking the request among microservices. 
+For zipkin, we can use a self-contained jar file for running zipkin server using command `curl -sSL https://zipkin.io/quickstart.sh | bash -s` and then `java -jar zipkin.jar`.
