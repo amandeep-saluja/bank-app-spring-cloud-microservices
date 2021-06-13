@@ -8,8 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.CreditCardNumber;
-
 import com.bank.account.entity.AccountEntity;
 
 import lombok.AllArgsConstructor;
