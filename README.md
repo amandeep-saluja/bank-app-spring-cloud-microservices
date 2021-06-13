@@ -8,10 +8,6 @@ In this stage whole applicaiton is splitted into different micorservices on the 
 ## Stage 3 - Multiple microservices with central configuration source and Configuration Server using Spring Cloud Config Server
 In this stage multiple microservices has a central configuration source as github repository where all the configuration is stored and properties are served to mciroservices using `Spring cloud Config Server` with all the microservices act as `Config Client`.
 
-<<<<<<< HEAD
-## Stage 4 - Using Ribbon Client Side Load Balancer
-In this Stage, load will be balanced between multiple instances of same microservice using Spring cloud netflix ribbon as client side load balancer.
-=======
 ## Stage 4 - Using Ribbon Client Side Load Balancer/ Spring cloud LoadBalancer
 In this Stage, load will be balanced between multiple instances of same microservice using Spring cloud netflix ribbon as client side load balancer.
 
@@ -29,4 +25,3 @@ We have replaced the Rest Template with Open Feign Declarative client for fetchi
 
 ## Stage 9 - Tracing requests using Sleuth and Zipkin
 In this Stage, we use Sleuth for creating the logs with extra information like microservice name, trace id, span id and boolean flag for zipkin. Using these info zipkin creates tracing system for tracking the request among microservices. For zipkin, we can use a self-contained jar file for running zipkin server using command `curl -sSL https://zipkin.io/quickstart.sh | bash -s` and then `java -jar zipkin.jar`.
->>>>>>> refs/remotes/origin/stage_9_sleuth_and_zipkin
